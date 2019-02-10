@@ -10,7 +10,8 @@ module.exports = {
       if (!results || !results.length) {
         throw new Error('No results found !')
       }
-      res.json(results)
+      console.log('results ===> ', require('util').inspect(results, { colors: true, depth: 4 }))
+      res.send(results)
     } catch (err) {
       res.send(err)
     }

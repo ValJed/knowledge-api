@@ -19,6 +19,7 @@
   "homepage": "https://github.com/ValentinJeudy/knowledge-api#readme",
   "dependencies": {
     "config": "^3.0.1",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "mongoose": "^5.4.10"
   },
