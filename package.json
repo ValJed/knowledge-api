@@ -18,9 +18,11 @@
   },
   "homepage": "https://github.com/ValentinJeudy/knowledge-api#readme",
   "dependencies": {
+    "bcrypt": "3.0.0",
     "config": "^3.0.1",
     "cors": "^2.8.5",
     "express": "^4.16.4",
+    "helmet": "^3.16.0",
     "mongoose": "^5.4.10"
   },
   "devDependencies": {

@@ -1,16 +1,24 @@
 const express = require('express')
 const cors = require('cors')
-
-const server = express()
-
+const helmet = require('helmet')
 const { dbConfig, corsOptions } = require('config')
 const mongoose = require('mongoose')
 // const Items = require('./models/testModels') // created model loading here
 const bodyParser = require('body-parser')
+const server = express()
+
+server.use(helmet())
 
 // mongoose instance connection url connection
 mongoose.Promise = global.Promise
-mongoose.connect(dbConfig.url)
+
+mongoose.connect(dbConfig.url, {
+  useNewUrlParser: true
+})
+
+mongoose.connection.on('error', (err) => {
+  console.error(err)
+})
 
 server.use(cors(corsOptions))
 

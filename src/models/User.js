@@ -6,18 +6,19 @@ const Schema = mongoose.Schema
 const UserSchema = new Schema({
   name: {
     type: String,
-    required: 'Kindly enter the name of the task'
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  team: {
+    type: Array,
+    required: false
   },
   Created_date: {
     type: Date,
     default: Date.now
-  },
-  status: {
-    type: [{
-      type: String,
-      enum: ['pending', 'ongoing', 'completed']
-    }],
-    default: ['pending']
   }
 })
 
