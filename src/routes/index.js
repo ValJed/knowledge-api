@@ -1,20 +1,26 @@
 'use strict'
 module.exports = (server) => {
-  var { getAllProjects, createAccount, getUsers } = require('../controllers/')
-
-  // testList Routes
-  // console.log('TESTLIST ===> ', require('util').inspect(testList, { colors: true, depth: 2 }))
-
-  // server.route('/user/:id')
+  const {
+    getAllProjects,
+    createAccount,
+    getUsers,
+    getUser,
+    logUser } = require('../controllers/')
 
   server.route('/projects')
     .get(getAllProjects)
+
+  server.route('/get-user')
+    .get(getUser)
 
   server.route('/users')
     .get(getUsers)
 
   server.route('/create-account')
-    .post(createAccount)
+    .put(createAccount)
+
+  server.route('/log-user')
+    .get(logUser)
 
   // server.route('/items/:itemId')
   //   .get(testList.read_an_item)

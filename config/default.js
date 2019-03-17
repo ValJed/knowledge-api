@@ -1,6 +1,6 @@
 module.exports = {
   dbConfig: {
-    port: 4000,
+    port: 7000,
     url: 'mongodb://localhost:27017/knowledge'
   },
   corsOptions: {

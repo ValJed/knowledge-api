@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 // const Items = require('./models/testModels') // created model loading here
 const bodyParser = require('body-parser')
 const server = express()
+const routes = require('./routes/') // importing route
 
 server.use(helmet())
 
@@ -25,7 +26,6 @@ server.use(cors(corsOptions))
 server.use(bodyParser.urlencoded({ extended: true }))
 server.use(bodyParser.json())
 
-var routes = require('./routes/') // importing route
 routes(server) // register the routes
 
 server.listen(dbConfig.port)
