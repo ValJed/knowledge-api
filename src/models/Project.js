@@ -11,7 +11,10 @@ const ProjectSchema = new Schema({
   description: {
     type: String
   },
-  contentItems: {
+  owners: {
+    type: Array
+  },
+  fields: {
     type: Array
   }
 })

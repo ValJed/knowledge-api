@@ -1,10 +1,12 @@
 const express = require('express')
+const session = require('express-session')
 const cors = require('cors')
 const helmet = require('helmet')
 const { dbConfig, corsOptions } = require('config')
 const mongoose = require('mongoose')
 // const Items = require('./models/testModels') // created model loading here
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const server = express()
 const routes = require('./routes/') // importing route
 
@@ -25,6 +27,36 @@ server.use(cors(corsOptions))
 
 server.use(bodyParser.urlencoded({ extended: true }))
 server.use(bodyParser.json())
+
+// server.use(cookieParser)
+
+// server.use(session({
+//   key: 'user_id',
+//   secret: 'whatdoyouwant?',
+//   cookie: {
+//     secure: true,
+//     expires: 600000
+//   },
+//   resave: false,
+//   saveUninitialized: false
+// }
+// ))
+
+// server.use((req, res, next) => {
+//   if (req.cookies.user_id && !req.session.user) {
+//     res.clearCookie('user_id')
+//   }
+//   next()
+// })
+
+// server.use((req, res, next) => {
+//   console.log('req.session ===> ', require('util').inspect(req.session, { colors: true, depth: 2 }))
+//   if (req.session.user && req.cookies.user_id) {
+//     res.redirect('/')
+//   } else {
+//     next()
+//   }
+// })
 
 routes(server) // register the routes
 

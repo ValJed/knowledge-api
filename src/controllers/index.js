@@ -6,7 +6,11 @@ const bcrypt = require('bcrypt')
 
 module.exports = {
 
-  getAllProjects: async (req, res) => {
+  getProjects: async (req, res) => {
+    const { userId } = req.body
+
+    console.log('userId ===> ', userId)
+
     try {
       const results = await ProjectsModel.find()
       if (!results || !results.length) {
@@ -32,13 +36,11 @@ module.exports = {
   },
 
   getUser: async (req, res) => {
-    const { email } = req.body
+    const { email } = req.query
 
-    console.log('email ===> ', require('util').inspect(email, { colors: true, depth: 2 }))
     try {
       const results = await UserModel.find({ email })
 
-      console.log('results ===> ', results)
       if (results && results.length) {
         return res.status(200).send('exists')
       }
@@ -90,14 +92,22 @@ module.exports = {
   },
 
   logUser: async (req, res) => {
+    console.log('=============> HERE <================')
     const { email, password } = req.body
 
-    try {
-      const user = await UserModel.find({ email })
+    console.log('email ===> ', email)
+    console.log('password ===> ', password)
 
-      const pswCompared = bcrypt.compareSync(password, 10)
+    try {
+      const [user] = await UserModel.find({ email })
+
+      console.log('user ===> ', user)
+
+      const pswCompared = bcrypt.compareSync(password, user.password, 10)
+
+      return pswCompared ? res.status(200).send(user) : res.status(401)
     } catch (err) {
-      console.error('err ===> ', err)
+      res.send(err)
     }
   }
 }

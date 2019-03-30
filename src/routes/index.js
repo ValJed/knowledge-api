@@ -1,14 +1,14 @@
 'use strict'
 module.exports = (server) => {
   const {
-    getAllProjects,
+    getProjects,
     createAccount,
     getUsers,
     getUser,
     logUser } = require('../controllers/')
 
-  server.route('/projects')
-    .get(getAllProjects)
+  server.route('/get-projects')
+    .get(getProjects)
 
   server.route('/get-user')
     .get(getUser)
@@ -20,7 +20,7 @@ module.exports = (server) => {
     .put(createAccount)
 
   server.route('/log-user')
-    .get(logUser)
+    .post(logUser)
 
   // server.route('/items/:itemId')
   //   .get(testList.read_an_item)
