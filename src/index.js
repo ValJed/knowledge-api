@@ -28,19 +28,19 @@ server.use(cors(corsOptions))
 server.use(bodyParser.urlencoded({ extended: true }))
 server.use(bodyParser.json())
 
-// server.use(cookieParser)
+server.use(cookieParser())
 
-// server.use(session({
-//   key: 'user_id',
-//   secret: 'whatdoyouwant?',
-//   cookie: {
-//     secure: true,
-//     expires: 600000
-//   },
-//   resave: false,
-//   saveUninitialized: false
-// }
-// ))
+server.use(session({
+  key: 'user_id',
+  secret: 'whatdoyouwant?',
+  cookie: {
+    // secure: true,
+    expires: 600000
+  },
+  resave: false,
+  saveUninitialized: false
+}
+))
 
 // server.use((req, res, next) => {
 //   if (req.cookies.user_id && !req.session.user) {
@@ -49,14 +49,15 @@ server.use(bodyParser.json())
 //   next()
 // })
 
-// server.use((req, res, next) => {
-//   console.log('req.session ===> ', require('util').inspect(req.session, { colors: true, depth: 2 }))
-//   if (req.session.user && req.cookies.user_id) {
-//     res.redirect('/')
-//   } else {
-//     next()
-//   }
-// })
+server.use('*', (req, res, next) => {
+  console.log('=============> USE <================')
+  console.log('req.session ===> ', require('util').inspect(req.session, { colors: true, depth: 2 }))
+  console.log('req.cookies ===> ', require('util').inspect(req.cookies, { colors: true, depth: 2 }))
+  if (req.session.user && req.cookies.user_id) {
+    res.redirect('/')
+  }
+  next()
+})
 
 routes(server) // register the routes
 

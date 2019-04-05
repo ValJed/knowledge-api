@@ -3,6 +3,8 @@
 const ProjectsModel = require('../models/Project.js')
 const UserModel = require('../models/User.js')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const config = require('config')
 
 module.exports = {
 
@@ -92,20 +94,38 @@ module.exports = {
   },
 
   logUser: async (req, res) => {
-    console.log('=============> HERE <================')
     const { email, password } = req.body
-
-    console.log('email ===> ', email)
-    console.log('password ===> ', password)
 
     try {
       const [user] = await UserModel.find({ email })
 
-      console.log('user ===> ', user)
+      console.log('user ===> ', require('util').inspect(user, { colors: true, depth: 2 }))
+
+      const token = jwt.sign({ id: user._id }, config.secret)
+
+      console.log('token ===> ', token)
 
       const pswCompared = bcrypt.compareSync(password, user.password, 10)
+      if (pswCompared) {
+        const token = jwt.sign({ id: user._id }, config.secret)
+        const { _id, pseudo, email } = user
+        const data = {
+          token,
+          user: {
+            _id,
+            pseudo,
+            email
+          }
+        }
+        req.session.token = token
+        res.cookie('user_id', 'token', { maxAge: 900000 })
+        console.log('req ===> ', require('util').inspect(req.session, { colors: true, depth: 0 }))
+        res.status(200).send(data)
+      } else {
+        res.status(401)
+      }
 
-      return pswCompared ? res.status(200).send(user) : res.status(401)
+      // return pswCompared ? res.status(200).send(user) : res.status(401)
     } catch (err) {
       res.send(err)
     }
