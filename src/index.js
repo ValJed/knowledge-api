@@ -50,12 +50,12 @@ server.use(session({
 // })
 
 server.use('*', (req, res, next) => {
-  console.log('=============> USE <================')
-  console.log('req.session ===> ', require('util').inspect(req.session, { colors: true, depth: 2 }))
-  console.log('req.cookies ===> ', require('util').inspect(req.cookies, { colors: true, depth: 2 }))
-  if (req.session.user && req.cookies.user_id) {
-    res.redirect('/')
-  }
+  // console.log('=============> USE <================')
+  // console.log('req.session ===> ', require('util').inspect(req.session, { colors: true, depth: 2 }))
+  // console.log('req.cookies ===> ', require('util').inspect(req.cookies, { colors: true, depth: 2 }))
+  // if (req.session.user && req.cookies.user_id) {
+  //   res.redirect('/')
+  // }
   next()
 })
 

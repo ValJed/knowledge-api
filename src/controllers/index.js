@@ -5,6 +5,7 @@ const UserModel = require('../models/User.js')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const config = require('config')
+const auth = require('../lib/authentication.js')
 
 module.exports = {
 
@@ -118,8 +119,6 @@ module.exports = {
           }
         }
         req.session.token = token
-        res.cookie('user_id', 'token', { maxAge: 900000 })
-        console.log('req ===> ', require('util').inspect(req.session, { colors: true, depth: 0 }))
         res.status(200).send(data)
       } else {
         res.status(401)
@@ -129,5 +128,12 @@ module.exports = {
     } catch (err) {
       res.send(err)
     }
+  },
+
+  session: async (req, res) => {
+    auth(req, res)
+    console.log('req ===> ', require('util').inspect(req.headers, { colors: true, depth: 2 }))
+
+    res.status(200)
   }
 }
