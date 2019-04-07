@@ -12,9 +12,12 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  team: {
+  teams: {
     type: Array,
     required: false
+  },
+  projects: {
+    type: Array
   },
   password: {
     type: String,

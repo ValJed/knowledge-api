@@ -10,6 +10,8 @@ const auth = require('../lib/authentication.js')
 module.exports = {
 
   getProjects: async (req, res) => {
+    console.log('req ===> ', require('util').inspect(req, { colors: true, depth: 0 }))
+
     const { userId } = req.body
 
     console.log('userId ===> ', userId)
@@ -99,26 +101,32 @@ module.exports = {
 
     try {
       const [user] = await UserModel.find({ email })
+      const pswCompared = bcrypt.compareSync(password, user.password, 10)
 
       console.log('user ===> ', require('util').inspect(user, { colors: true, depth: 2 }))
 
-      const token = jwt.sign({ id: user._id }, config.secret)
-
-      console.log('token ===> ', token)
-
-      const pswCompared = bcrypt.compareSync(password, user.password, 10)
       if (pswCompared) {
+        const projects = await ProjectsModel.find({ _id: { $in: user.projects } })
+
+        console.log('projects ===> ', require('util').inspect(projects, { colors: true, depth: 2 }))
+
         const token = jwt.sign({ id: user._id }, config.secret)
-        const { _id, pseudo, email } = user
+        const {
+          _id,
+          pseudo,
+          email,
+          teams } = user
+
         const data = {
           token,
           user: {
             _id,
             pseudo,
-            email
-          }
+            email,
+            teams
+          },
+          projects
         }
-        req.session.token = token
         res.status(200).send(data)
       } else {
         res.status(401)
@@ -128,12 +136,5 @@ module.exports = {
     } catch (err) {
       res.send(err)
     }
-  },
-
-  session: async (req, res) => {
-    auth(req, res)
-    console.log('req ===> ', require('util').inspect(req.headers, { colors: true, depth: 2 }))
-
-    res.status(200)
   }
 }
