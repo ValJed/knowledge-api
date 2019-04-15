@@ -1,6 +1,6 @@
 'use strict'
 
-const ProjectsModel = require('../models/Project.js')
+const ProjectModel = require('../models/Project.js')
 const UserModel = require('../models/User.js')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -17,7 +17,7 @@ module.exports = {
     console.log('userId ===> ', userId)
 
     try {
-      const results = await ProjectsModel.find()
+      const results = await ProjectModel.find()
       if (!results || !results.length) {
         throw new Error('No results found !')
       }
@@ -46,14 +46,15 @@ module.exports = {
     try {
       const results = await UserModel.find({ email })
 
+      console.log('results ===> ', results)
+
       if (results && results.length) {
         return res.status(200).send('exists')
       }
-
-      return res.status(200)
+      console.log('=============> HERE <================')
+      return res.status(200).send()
     } catch (err) {
-      console.error('err ===> ', err)
-      res.send(err)
+      return res.status(500).send(err.message)
     }
   },
 
@@ -91,8 +92,7 @@ module.exports = {
 
       return res.status(201).send('created')
     } catch (err) {
-      console.error(err)
-      res.send(err)
+      res.status(500).send(err.message)
     }
   },
 
@@ -106,7 +106,7 @@ module.exports = {
       console.log('user ===> ', require('util').inspect(user, { colors: true, depth: 2 }))
 
       if (pswCompared) {
-        const projects = await ProjectsModel.find({ _id: { $in: user.projects } })
+        const projects = await ProjectModel.find({ _id: { $in: user.projects } })
 
         console.log('projects ===> ', require('util').inspect(projects, { colors: true, depth: 2 }))
 
@@ -135,6 +135,30 @@ module.exports = {
       // return pswCompared ? res.status(200).send(user) : res.status(401)
     } catch (err) {
       res.send(err)
+      res.status(500).send(err.message)
+    }
+  },
+
+  createProject: async (req, res) => {
+    auth(req, res)
+    try {
+      const { _id, projectName } = req.body
+
+      const project = await ProjectModel.create({ name: projectName })
+
+      if (project) {
+        const user = await UserModel.updateOne({ _id }, { $push: { projects: project._id } })
+
+        if (user) {
+          res.status(200)
+        } else {
+          res.status(500).send('Error when trying to update user profile')
+        }
+      } else {
+        res.status(500).send('Error when trying to add a project')
+      }
+    } catch (err) {
+      res.status(500).send(err.message)
     }
   }
 }

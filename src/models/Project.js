@@ -8,8 +8,13 @@ const ProjectSchema = new Schema({
     type: String,
     required: 'Kindly enter the name of the task'
   },
+  img: {
+    type: String,
+    default: ''
+  },
   description: {
-    type: String
+    type: String,
+    default: ''
   },
   owners: {
     type: Array
@@ -19,4 +24,4 @@ const ProjectSchema = new Schema({
   }
 })
 
-module.exports = mongoose.model('Projects', ProjectSchema)
+module.exports = mongoose.model('Project', ProjectSchema)
