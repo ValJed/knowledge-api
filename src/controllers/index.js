@@ -101,16 +101,17 @@ module.exports = {
 
     try {
       const [user] = await UserModel.find({ email })
-      const pswCompared = bcrypt.compareSync(password, user.password, 10)
 
       console.log('user ===> ', require('util').inspect(user, { colors: true, depth: 2 }))
+      const pswCompared = bcrypt.compareSync(password, user.password, 10)
 
+      console.log('pswCompared ===> ', pswCompared)
       if (pswCompared) {
         const projects = await ProjectModel.find({ _id: { $in: user.projects } })
 
-        console.log('projects ===> ', require('util').inspect(projects, { colors: true, depth: 2 }))
-
         const token = jwt.sign({ id: user._id }, config.secret)
+
+        console.log('token ===> ', token)
         const {
           _id,
           pseudo,
@@ -127,9 +128,11 @@ module.exports = {
           },
           projects
         }
+
+        console.log('data ===> ', require('util').inspect(data, { colors: true, depth: 2 }))
         res.status(200).send(data)
       } else {
-        res.status(401)
+        res.status(401).send()
       }
 
       // return pswCompared ? res.status(200).send(user) : res.status(401)
@@ -150,7 +153,7 @@ module.exports = {
         const user = await UserModel.updateOne({ _id }, { $push: { projects: project._id } })
 
         if (user) {
-          res.status(200)
+          res.status(200).send(project)
         } else {
           res.status(500).send('Error when trying to update user profile')
         }
