@@ -101,17 +101,13 @@ module.exports = {
 
     try {
       const [user] = await UserModel.find({ email })
-
-      console.log('user ===> ', require('util').inspect(user, { colors: true, depth: 2 }))
       const pswCompared = bcrypt.compareSync(password, user.password, 10)
 
-      console.log('pswCompared ===> ', pswCompared)
       if (pswCompared) {
         const projects = await ProjectModel.find({ _id: { $in: user.projects } })
 
         const token = jwt.sign({ id: user._id }, config.secret)
 
-        console.log('token ===> ', token)
         const {
           _id,
           pseudo,
@@ -128,8 +124,6 @@ module.exports = {
           },
           projects
         }
-
-        console.log('data ===> ', require('util').inspect(data, { colors: true, depth: 2 }))
         res.status(200).send(data)
       } else {
         res.status(401).send()
@@ -137,7 +131,7 @@ module.exports = {
 
       // return pswCompared ? res.status(200).send(user) : res.status(401)
     } catch (err) {
-      res.send(err)
+      console.log('err ===> ', err)
       res.status(500).send(err.message)
     }
   },
