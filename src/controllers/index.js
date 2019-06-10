@@ -46,12 +46,9 @@ module.exports = {
     try {
       const results = await UserModel.find({ email })
 
-      console.log('results ===> ', results)
-
       if (results && results.length) {
         return res.status(200).send('exists')
       }
-      console.log('=============> HERE <================')
       return res.status(200).send()
     } catch (err) {
       return res.status(500).send(err.message)
@@ -156,6 +153,27 @@ module.exports = {
       }
     } catch (err) {
       res.status(500).send(err.message)
+    }
+  },
+
+  addField: async (req, res) => {
+    auth(req, res)
+    try {
+      const { _id, name } = req.body
+      const data = { name }
+
+      const field = await ProjectModel.updateOne({ _id }, { $push: { fields: data } })
+
+      if (field) {
+        res.status(200).send(data)
+      } else {
+        res.status(500).send('Error when trying to add a field')
+      }
+    } catch (err) {
+      console.error(
+        `Error when trying to add a field
+        ${err}`
+      )
     }
   }
 }

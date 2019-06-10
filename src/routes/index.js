@@ -6,7 +6,9 @@ module.exports = (server) => {
     getUsers,
     getUser,
     logUser,
-    createProject } = require('../controllers/')
+    createProject,
+    addField
+  } = require('../controllers/')
 
   server.route('/get-projects')
     .get(getProjects)
@@ -25,6 +27,9 @@ module.exports = (server) => {
 
   server.route('/create-project')
     .post(createProject)
+
+  server.route('/add-field')
+    .post(addField)
 
   // server.route('/items/:itemId')
   //   .get(testList.read_an_item)
