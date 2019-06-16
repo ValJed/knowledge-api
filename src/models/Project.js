@@ -19,7 +19,7 @@ const ProjectSchema = new Schema({
   owners: {
     type: Array
   },
-  fields: {
+  blocks: {
     type: Array
   }
 })

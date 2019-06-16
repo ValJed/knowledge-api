@@ -156,7 +156,7 @@ module.exports = {
     }
   },
 
-  addField: async (req, res) => {
+  addBlock: async (req, res) => {
     auth(req, res)
     try {
       const { _id, name } = req.body
