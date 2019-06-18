@@ -143,7 +143,7 @@ module.exports = {
       if (project) {
         const user = await UserModel.updateOne({ _id }, { $push: { projects: project._id } })
 
-        if (user) {
+        if (user.ok) {
           res.status(200).send(project)
         } else {
           res.status(500).send('Error when trying to update user profile')
@@ -162,9 +162,9 @@ module.exports = {
       const { _id, name } = req.body
       const data = { name }
 
-      const field = await ProjectModel.updateOne({ _id }, { $push: { fields: data } })
+      const block = await ProjectModel.updateOne({ _id }, { $push: { blocks: data } })
 
-      if (field) {
+      if (block.ok) {
         res.status(200).send(data)
       } else {
         res.status(500).send('Error when trying to add a field')
@@ -174,6 +174,29 @@ module.exports = {
         `Error when trying to add a field
         ${err}`
       )
+      res.status(500).send(err.message)
+    }
+  },
+
+  addPage: async (req, res) => {
+    auth(req, res)
+    try {
+      const { _id, name } = req.body
+      const data = { name }
+
+      // const block = await ProjectModel.updateOne({ _id }, { $push: { blocks: data } })
+
+      if (block.ok) {
+        res.status(200).send(data)
+      } else {
+        res.status(500).send('Error when trying to add a field')
+      }
+    } catch (err) {
+      console.error(
+        `Error when trying to add a field
+        ${err}`
+      )
+      res.status(500).send(err.message)
     }
   }
 }
