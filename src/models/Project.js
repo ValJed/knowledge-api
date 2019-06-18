@@ -1,6 +1,7 @@
 
 'use strict'
 const mongoose = require('mongoose')
+const Block = require('./Block')
 const Schema = mongoose.Schema
 
 const ProjectSchema = new Schema({
@@ -19,9 +20,9 @@ const ProjectSchema = new Schema({
   owners: {
     type: Array
   },
-  blocks: {
-    type: Array
-  }
+  blocks: [Block]
 })
+
+console.log('ProjectSchema ===> ', ProjectSchema)
 
 module.exports = mongoose.model('Project', ProjectSchema)

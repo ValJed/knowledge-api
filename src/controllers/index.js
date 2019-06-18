@@ -162,7 +162,13 @@ module.exports = {
       const { _id, name } = req.body
       const data = { name }
 
-      const block = await ProjectModel.updateOne({ _id }, { $push: { blocks: data } })
+      const block = await ProjectModel.findOneAndUpdate(
+        { _id },
+        { $push: { blocks: data } },
+        { returnNewDocument: true }
+      )
+
+      console.log(' block ===> ', block)
 
       if (block.ok) {
         res.status(200).send(data)
@@ -184,7 +190,7 @@ module.exports = {
       const { _id, name } = req.body
       const data = { name }
 
-      // const block = await ProjectModel.updateOne({ _id }, { $push: { blocks: data } })
+      const block = await ProjectModel.updateOne({ _id }, { $push: { blocks: data } })
 
       if (block.ok) {
         res.status(200).send(data)
