@@ -162,16 +162,16 @@ module.exports = {
       const { _id, name } = req.body
       const data = { name }
 
-      const block = await ProjectModel.findOneAndUpdate(
+      const updatedDoc = await ProjectModel.findOneAndUpdate(
         { _id },
         { $push: { blocks: data } },
-        { returnNewDocument: true }
+        { new: true }
       )
 
-      console.log(' block ===> ', block)
+      const newBlock = updatedDoc.blocks[updatedDoc.blocks.length - 1]
 
-      if (block.ok) {
-        res.status(200).send(data)
+      if (updatedDoc && newBlock) {
+        res.status(200).send(updatedDoc)
       } else {
         res.status(500).send('Error when trying to add a field')
       }
@@ -190,7 +190,7 @@ module.exports = {
       const { _id, name } = req.body
       const data = { name }
 
-      const block = await ProjectModel.updateOne({ _id }, { $push: { blocks: data } })
+      const block = await ProjectModel.findOneAndUpdate({ _id }, { $push: { blocks: data } })
 
       if (block.ok) {
         res.status(200).send(data)

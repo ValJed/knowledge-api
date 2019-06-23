@@ -23,6 +23,4 @@ const ProjectSchema = new Schema({
   blocks: [Block]
 })
 
-console.log('ProjectSchema ===> ', ProjectSchema)
-
 module.exports = mongoose.model('Project', ProjectSchema)

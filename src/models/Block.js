@@ -8,7 +8,7 @@ module.exports = new Schema({
     type: String,
     required: true
   },
-  fields: {
+  pages: {
     type: Array,
     required: true,
     default: []
