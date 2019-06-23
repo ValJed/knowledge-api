@@ -1,5 +1,5 @@
 'use strict'
-
+const mongoose = require('mongoose')
 const ProjectModel = require('../models/Project.js')
 const UserModel = require('../models/User.js')
 const bcrypt = require('bcrypt')
@@ -185,15 +185,26 @@ module.exports = {
   },
 
   addPage: async (req, res) => {
+    const ObjectId = mongoose.Types.ObjectId
+
     auth(req, res)
     try {
-      const { _id, name } = req.body
+      const { _id, name, blockId } = req.body
       const data = { name }
 
-      const block = await ProjectModel.findOneAndUpdate({ _id }, { $push: { blocks: data } })
+      const updatedDoc = await ProjectModel.findOneAndUpdate(
+        { _id, 'blocks._id': blockId },
+        { $push: { 'blocks.$.pages': data } },
+        { new: true }
+      )
 
-      if (block.ok) {
-        res.status(200).send(data)
+      const currentBlock = updatedDoc.blocks.find((block) => block._id.toString() === blockId)
+      const newPage = currentBlock.pages && currentBlock.pages[currentBlock.pages.length - 1]
+
+      console.log('newPage ===> ', require('util').inspect(newPage, { colors: true, depth: 2 }))
+
+      if (updatedDoc && newPage) {
+        res.status(200).send(newPage)
       } else {
         res.status(500).send('Error when trying to add a field')
       }
