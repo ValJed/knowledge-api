@@ -171,7 +171,7 @@ module.exports = {
       const newBlock = updatedDoc.blocks[updatedDoc.blocks.length - 1]
 
       if (updatedDoc && newBlock) {
-        res.status(200).send(updatedDoc)
+        res.status(200).send(newBlock)
       } else {
         res.status(500).send('Error when trying to add a field')
       }
@@ -200,8 +200,6 @@ module.exports = {
 
       const currentBlock = updatedDoc.blocks.find((block) => block._id.toString() === blockId)
       const newPage = currentBlock.pages && currentBlock.pages[currentBlock.pages.length - 1]
-
-      console.log('newPage ===> ', require('util').inspect(newPage, { colors: true, depth: 2 }))
 
       if (updatedDoc && newPage) {
         res.status(200).send(newPage)
