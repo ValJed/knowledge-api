@@ -2,39 +2,27 @@ const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const { dbConfig, corsOptions } = require('config')
-const mongoose = require('mongoose')
-// const Items = require('./models/testModels') // created model loading here
 const bodyParser = require('body-parser')
-const server = express()
-const routes = require('./routes/') // importing route
 
-server.use(helmet())
+const app = express()
+const db = require('./db')
+const api = require('./modules/') // importing route
 
-// mongoose instance connection url connection
-mongoose.Promise = global.Promise
+const startApp = async () => {
+  await db.connect()
 
-mongoose.connect(dbConfig.url, {
-  useNewUrlParser: true
-})
+  app.use(helmet())
 
-mongoose.connection.on('error', (err) => {
-  console.error(err)
-})
+  app.use(cors(corsOptions))
 
-server.use(cors(corsOptions))
+  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(bodyParser.json())
 
-server.use(bodyParser.urlencoded({ extended: true }))
-server.use(bodyParser.json())
+  api(app) // register the routes
 
-// server.use((req, res, next) => {
-//   if (req.cookies.user_id && !req.session.user) {
-//     res.clearCookie('user_id')
-//   }
-//   next()
-// })
+  app.listen(dbConfig.port)
 
-routes(server) // register the routes
+  console.log(`Knowledge API just started on port ${dbConfig.port}`)
+}
 
-server.listen(dbConfig.port)
-
-console.log(`Knowledge API just started on port ${dbConfig.port}`)
+startApp()

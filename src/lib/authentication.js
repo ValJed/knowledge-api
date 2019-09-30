@@ -14,7 +14,6 @@ module.exports = async (req, res) => {
     }
 
     if (verifiedToken) {
-      console.log('valid token <===')
     } else {
       res.status(401).send('invalid token...')
     }
