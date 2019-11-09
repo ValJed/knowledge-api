@@ -10,11 +10,7 @@ const auth = require('../lib/authentication.js')
 module.exports = {
 
   getProjects: async (req, res) => {
-    console.log('req ===> ', require('util').inspect(req, { colors: true, depth: 0 }))
-
     const { userId } = req.body
-
-    console.log('userId ===> ', userId)
 
     try {
       const results = await ProjectModel.find()
