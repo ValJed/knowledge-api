@@ -7,8 +7,11 @@ const repository = (db) => {
     find: () => UsersDb.find().toArray(),
     findOne: (email) => UsersDb.findOne({ email }),
     insertOne: (user) => UsersDb.insertOne(user),
-    deleteOne: (id) => UsersDb.deleteOne({ _id: id })
-    // update: (user) => UsersDb.update({ _id: user.id }, user)
+    deleteOne: (id) => UsersDb.deleteOne({ _id: id }),
+    addProjectToUser: (userId, projectId) => UsersDb.findOneAndUpdate(
+      { _id: userId },
+      { $push: { projects: projectId } },
+      { returnOriginal: false })
   }
 }
 

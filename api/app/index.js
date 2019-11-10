@@ -14,7 +14,6 @@ const database = require('../infra/mongodb')
 // Repositories
 const usersRepository = require('../infra/mongodb/repositories/users')
 const ProjectsRepository = require('../infra/mongodb/repositories/projects')
-const BlocksRepository = require('../infra/mongodb/repositories/blocks')
 
 const jwt = require('../infra/jwt')
 const encrypt = require('../infra/encryption')
@@ -22,25 +21,29 @@ const encrypt = require('../infra/encryption')
 const startApp = async () => {
   const client = await database.connect(config.dbConfig)
 
+  const usersRepo = usersRepository(database.db())
+  const projectsRepo = ProjectsRepository(database.db())
+
   http.start({
     config,
     database: client,
     log: logger,
     services: {
       users: usersServices({
-        repository: usersRepository(database.db()),
-        projectsRepository: ProjectsRepository(database.db()),
+        usersRepo,
+        projectsRepo,
         encrypt,
         jwt: jwt(config),
         log: logger
       }),
       projects: ProjectsServices({
-        repository: ProjectsRepository(database.db()),
+        usersRepo,
+        projectsRepo,
         jwt: jwt(config),
         log: logger
       }),
       blocks: BlocksServices({
-        repository: BlocksRepository(database.db()),
+        projectsRepo,
         log: logger
       })
     }

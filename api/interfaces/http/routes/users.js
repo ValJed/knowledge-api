@@ -8,27 +8,12 @@ module.exports = ({
 }) => {
   const router = new express.Router()
 
+  // Getting all users
   router.get('/api/users', async (req, res, next) => {
     console.log('usersService ===> ', require('util').inspect(usersService, { colors: true, depth: 2 }))
   })
 
-  router.post('/api/users', async (req, res, next) => {
-    const data = req.body
-
-    try {
-      const response = await usersService.create(data)
-
-      if (response.success) {
-        res.status(201).send(response)
-      } else {
-        res.status(400).send(response)
-      }
-    } catch (err) {
-      log.error(err)
-      res.status(400).send(err.response)
-    }
-  })
-
+  // Login user
   router.post('/api/login', async (req, res, next) => {
     try {
       const data = req.body
@@ -49,24 +34,21 @@ module.exports = ({
     }
   })
 
-  router.get('/api/users/verify', (req, res, next) => {
+  // Creating new user
+  router.post('/api/users', async (req, res, next) => {
     try {
-      const token = req.headers &&
-        req.headers.authorization &&
-        req.headers.authorization.replace('Bearer ', '')
+      const data = req.body
 
-      if (token && token.length) {
-        const verifiedUser = usersService.verify(token)
+      const response = await usersService.create(data)
 
-        if (verifiedUser) {
-          res.status(200).send({ token })
-        }
+      if (response.success) {
+        res.status(201).send(response)
       } else {
-        res.status(401).send()
+        res.status(400).send(response)
       }
     } catch (err) {
       log.error(err)
-      res.status(401).send(err.response)
+      res.status(400).send(err.response)
     }
   })
 

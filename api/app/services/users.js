@@ -1,14 +1,14 @@
-const usersEntity = require('../../domain/users')
+// const usersEntity = require('../../domain/users')
 
 module.exports = ({
-  repository,
-  projectsRepository,
+  usersRepo,
+  projectsRepo,
   encrypt,
   jwt,
   log
 }) => {
   const findAll = async () => {
-    const users = await repository.find()
+    const users = await usersRepo.find()
 
     if (users && users.length) {
       return {
@@ -23,7 +23,7 @@ module.exports = ({
   }
 
   const findByEmail = (email) => {
-    const user = repository.findOne({ email })
+    const user = usersRepo.findOne({ email })
 
     if (user) {
       return {
@@ -38,7 +38,7 @@ module.exports = ({
   }
 
   const login = async ({ email, password }) => {
-    const user = await repository.findOne({ email })
+    const user = await usersRepo.findOne({ email })
 
     if (!user) {
       return {
@@ -50,7 +50,7 @@ module.exports = ({
     const isPasswordValid = await encrypt.comparePassword(password, user.hash, user.salt)
 
     if (isPasswordValid) {
-      const projects = await projectsRepository.find({ _id: { $in: user.projects } })
+      const projects = await projectsRepo.find({ _id: { $in: user.projects } })
 
       return {
         success: true,
@@ -64,7 +64,6 @@ module.exports = ({
       msg: 'Password isn\'t valid'
     }
   }
-
 
   const create = async ({ pseudo, username, password }) => {
     // const validation = usersEntity.validate({ username, password })
@@ -90,32 +89,10 @@ module.exports = ({
       salt
     }
 
-    const res = await repository.insertOne(data)
+    const res = await usersRepo.insertOne(data)
 
     return {
       success: !!res.result.ok
-    }
-  }
-
-  const login = async ({ username, password }) => {
-    const user = await repository.findOne({ username })
-
-    if (!user) {
-      return false
-    }
-
-    const isPasswordValid = await encrypt.comparePassword(password, user.hash, user.salt)
-
-    if (isPasswordValid) {
-      return {
-        success: true,
-        token: jwt.signin(user._id)
-      }
-    }
-
-    return {
-      success: false,
-      msg: 'Password isn\'t valid'
     }
   }
 
@@ -131,7 +108,9 @@ module.exports = ({
 
   return {
     findAll,
-    findByEmail
+    findByEmail,
     login,
+    create,
+    verify
   }
 }

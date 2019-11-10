@@ -1,7 +1,14 @@
 module.exports = {
+  serverConfig: {
+    port: 7000
+  },
   dbConfig: {
-    port: 7000,
-    uri: 'mongodb://localhost:27017/knowledge'
+    uri: 'mongodb://localhost:27017/knowledge',
+    database: 'knowledge',
+    options: {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }
   },
   corsOptions: {
     origin: 'http://localhost:8080',

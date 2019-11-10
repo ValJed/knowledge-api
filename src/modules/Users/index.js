@@ -10,7 +10,7 @@ module.exports = (app) => {
 
   app.get('/users', getUsers)
 
-  app.post('/users/log', logUser)
+  app.post('/users/login', logUser)
 
   app.put('/users', createUser)
 }
