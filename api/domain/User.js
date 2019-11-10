@@ -1,32 +1,16 @@
 
-'use strict'
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
-
-const UserSchema = new Schema({
-  pseudo: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true
-  },
-  teams: {
-    type: Array,
-    required: false
-  },
-  projects: {
-    type: Array
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  CreatedDate: {
-    type: Date,
-    default: Date.now
+module.export = ({ username, email, hash, salt }) => {
+  const user = {
+    username,
+    email,
+    password: {
+      hash,
+      salt
+    },
+    teams: [],
+    projects: [],
+    CreatedAt: new Date()
   }
-})
 
-module.exports = mongoose.model('Users', UserSchema)
+  return user
+}

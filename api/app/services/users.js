@@ -1,4 +1,4 @@
-// const usersEntity = require('../../domain/users')
+const userEntity = require('../../domain/User')
 
 module.exports = ({
   usersRepo,
@@ -38,7 +38,9 @@ module.exports = ({
   }
 
   const login = async ({ email, password }) => {
-    const user = await usersRepo.findOne({ email })
+    const user = await usersRepo.findOne(email)
+
+    console.log('user ===> ', require('util').inspect(user, { colors: true, depth: 2 }))
 
     if (!user) {
       return {
@@ -48,6 +50,8 @@ module.exports = ({
     }
 
     const isPasswordValid = await encrypt.comparePassword(password, user.hash, user.salt)
+
+    console.log('isPasswordValid ===> ', require('util').inspect(isPasswordValid, { colors: true, depth: 2 }))
 
     if (isPasswordValid) {
       const projects = await projectsRepo.find({ _id: { $in: user.projects } })
@@ -65,23 +69,40 @@ module.exports = ({
     }
   }
 
-  const create = async ({ pseudo, username, password }) => {
+  const create = async ({ username, email, password }) => {
     // const validation = usersEntity.validate({ username, password })
-    const newUser = {
-      pseudo,
-      email
-    }
+    // const newUser = {
+    //   pseudo,
+    //   email
+    // }
+    const existingUser = await usersRepo.findOne(email)
 
-    if (validation.error) {
+    if (existingUser) {
       return {
         success: false,
-        errors: validation.error.details.map((error) => error.message)
+        errors: ['This email already match an account']
       }
     }
 
-    log.info(validation)
-
     const { hash, salt } = await encrypt.encryptPassword(password)
+
+    const newUser = userEntity({ username, email, hash, salt })
+
+    const res = usersRepo.create(newUser)
+
+    console.log('res ===> ', require('util').inspect(res, { colors: true, depth: 2 }))
+
+    if (res) {
+
+    }
+
+    console.log('newUser ===> ', require('util').inspect(newUser, { colors: true, depth: 2 }))
+    // if (validation.error) {
+    //   return {
+    //     success: false,
+    //     errors: validation.error.details.map((error) => error.message)
+    //   }
+    // }
 
     const data = {
       username,

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/",
-    "api": "nodemon api/app",
+    "api": "NODE_ENV=development nodemon api/app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/ValentinJeudy/knowledge-api#readme",
   "dependencies": {
+    "@hapi/joi": "^16.1.7",
     "bcrypt": "^3.0.0",
     "config": "^3.0.1",
     "cookie-parser": "^1.4.4",

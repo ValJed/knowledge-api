@@ -10,6 +10,9 @@ module.exports = ({
 
   // Getting all users
   router.get('/api/users', async (req, res, next) => {
+    console.log('req ===> ', require('util').inspect(req, { colors: true, depth: 0 }))
+
+    const existingUser = usersService.findByEmail()
     console.log('usersService ===> ', require('util').inspect(usersService, { colors: true, depth: 2 }))
   })
 
@@ -17,6 +20,7 @@ module.exports = ({
   router.post('/api/login', async (req, res, next) => {
     try {
       const data = req.body
+      console.log('data ===> ', require('util').inspect(data, { colors: true, depth: 2 }))
 
       const response = await usersService.login(data)
 
@@ -38,6 +42,8 @@ module.exports = ({
   router.post('/api/users', async (req, res, next) => {
     try {
       const data = req.body
+
+      console.log('data ===> ', require('util').inspect(data, { colors: true, depth: 2 }))
 
       const response = await usersService.create(data)
 
