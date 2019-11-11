@@ -1,4 +1,4 @@
-// const ProjectEntity = require('../../domain/Project')
+const ProjectEntity = require('../../domain/Project')
 
 module.exports = ({
   usersRepo,
@@ -7,8 +7,8 @@ module.exports = ({
   jwt,
   log
 }) => {
-  const getprojects = async (userId) => {
-    const projects = await usersRepo.find()
+  const getUserprojects = async (userId) => {
+    const projects = await usersRepo.findUserProjects(userId)
 
     if (projects && projects.length) {
       return {
@@ -23,18 +23,22 @@ module.exports = ({
   }
 
   const create = async (userId, projectName) => {
-    const project = await projectsRepo.create({ name: projectName })
+    const project = ProjectEntity(userId, projectName)
 
-    if (project) {
-      const res = await usersRepo.addprojectToUser(userId, project.id)
+    const createdProject = await projectsRepo.create(project)
 
-      if (res.value) {
+    if (createdProject.result.ok) {
+      const updatedUser = await usersRepo.addProjectToUser(userId, createdProject.insertedId)
+
+      if (updatedUser.value) {
         return {
           success: true,
-          project: res.value
+          project: {
+            _id: createdProject.insertedId,
+            ...project
+          }
         }
       }
-
       return {
         success: false,
         errors: ['User couldn\'t have been updated']
@@ -48,7 +52,7 @@ module.exports = ({
   }
 
   return {
-    getprojects,
+    getUserprojects,
     create
   }
 }

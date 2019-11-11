@@ -8,19 +8,26 @@ module.exports = ({
 }) => {
   const router = new express.Router()
 
-  // Getting all users
+  // Getting a specific user
   router.get('/api/users', async (req, res, next) => {
-    console.log('req ===> ', require('util').inspect(req, { colors: true, depth: 0 }))
+    try {
+      const { email } = req.query
+      const response = await usersService.findByEmail(email)
 
-    const existingUser = usersService.findByEmail()
-    console.log('usersService ===> ', require('util').inspect(usersService, { colors: true, depth: 2 }))
+      if (response.success) {
+        return res.status(200).send(response)
+      }
+      res.status(404).send(response)
+    } catch (err) {
+      log.error(err)
+      res.status(500).send(err.message)
+    }
   })
 
   // Login user
   router.post('/api/login', async (req, res, next) => {
     try {
       const data = req.body
-      console.log('data ===> ', require('util').inspect(data, { colors: true, depth: 2 }))
 
       const response = await usersService.login(data)
 
@@ -30,11 +37,8 @@ module.exports = ({
         res.status(400).send(response)
       }
     } catch (err) {
-      log.error({
-        success: false,
-        error: err.msg
-      })
-      res.status(400).send(err.response)
+      log.error(err)
+      res.status(500).send(err.message)
     }
   })
 
@@ -42,8 +46,6 @@ module.exports = ({
   router.post('/api/users', async (req, res, next) => {
     try {
       const data = req.body
-
-      console.log('data ===> ', require('util').inspect(data, { colors: true, depth: 2 }))
 
       const response = await usersService.create(data)
 
@@ -54,7 +56,7 @@ module.exports = ({
       }
     } catch (err) {
       log.error(err)
-      res.status(400).send(err.response)
+      res.status(400).send(err.message)
     }
   })
 

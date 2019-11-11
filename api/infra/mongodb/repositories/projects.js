@@ -5,13 +5,14 @@ const repository = (db) => {
 
   return {
     find: () => ProjectsDb.find().toArray(),
-    create: (name) => ProjectsDb.insertOne({ name }),
+    findUserProjects: (ids) => ProjectsDb.find({ _id: { $in: ids } }).toArray(),
+    create: (project) => ProjectsDb.insertOne(project),
     addBlockToProject: (projectId, blockData) => ProjectsDb.findOneAndUpdate(
-      { _id: projectId },
+      { _id: ObjectID(projectId) },
       { $push: { blocks: blockData } },
       { returnOriginal: false }),
     addPageToBlock: (projectId, blockId, pageData) => ProjectsDb.findOneAndUpdate(
-      { _id: projectId, 'blocks._id': blockId },
+      { _id: ObjectID(projectId), 'blocks._id': ObjectID(blockId) },
       { $push: { 'blocks.$.pages': pageData } },
       { returnOriginal: false })
   }

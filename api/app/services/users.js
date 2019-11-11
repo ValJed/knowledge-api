@@ -22,13 +22,12 @@ module.exports = ({
     }
   }
 
-  const findByEmail = (email) => {
-    const user = usersRepo.findOne({ email })
+  const findByEmail = async (email) => {
+    const user = await usersRepo.findOne(email)
 
     if (user) {
       return {
-        success: true,
-        user
+        success: true
       }
     }
     return {
@@ -37,44 +36,7 @@ module.exports = ({
     }
   }
 
-  const login = async ({ email, password }) => {
-    const user = await usersRepo.findOne(email)
-
-    console.log('user ===> ', require('util').inspect(user, { colors: true, depth: 2 }))
-
-    if (!user) {
-      return {
-        success: false,
-        errors: ['No user found for this email']
-      }
-    }
-
-    const isPasswordValid = await encrypt.comparePassword(password, user.hash, user.salt)
-
-    console.log('isPasswordValid ===> ', require('util').inspect(isPasswordValid, { colors: true, depth: 2 }))
-
-    if (isPasswordValid) {
-      const projects = await projectsRepo.find({ _id: { $in: user.projects } })
-
-      return {
-        success: true,
-        token: jwt.signin(user._id),
-        projects
-      }
-    }
-
-    return {
-      success: false,
-      msg: 'Password isn\'t valid'
-    }
-  }
-
-  const create = async ({ username, email, password }) => {
-    // const validation = usersEntity.validate({ username, password })
-    // const newUser = {
-    //   pseudo,
-    //   email
-    // }
+  const create = async ({ username, email, password, checkPassword }) => {
     const existingUser = await usersRepo.findOne(email)
 
     if (existingUser) {
@@ -84,36 +46,56 @@ module.exports = ({
       }
     }
 
-    const { hash, salt } = await encrypt.encryptPassword(password)
+    if (password !== checkPassword) {
+      return {
+        success: false,
+        errors: ['Your password validation shoyld match your password']
+      }
+    }
+
+    const { hash, salt } = await encrypt.encryptPsw(password)
 
     const newUser = userEntity({ username, email, hash, salt })
 
-    const res = usersRepo.create(newUser)
-
-    console.log('res ===> ', require('util').inspect(res, { colors: true, depth: 2 }))
+    const res = await usersRepo.create(newUser)
 
     if (res) {
+      return {
+        success: !!res.result.ok
+      }
+    }
+  }
 
+  const login = async ({ email, password }) => {
+    const user = await usersRepo.findOne(email)
+
+    if (!user) {
+      return {
+        success: false,
+        errors: ['No user found for this email']
+      }
     }
 
-    console.log('newUser ===> ', require('util').inspect(newUser, { colors: true, depth: 2 }))
-    // if (validation.error) {
-    //   return {
-    //     success: false,
-    //     errors: validation.error.details.map((error) => error.message)
-    //   }
-    // }
+    const isPasswordValid = await encrypt.comparePsw(password, user.password.hash, user.password.salt)
 
-    const data = {
-      username,
-      hash,
-      salt
+    if (isPasswordValid) {
+      const projects = await projectsRepo.findUserProjects(user.projectsIds)
+
+      console.log('projects ===> ', require('util').inspect(projects, { colors: true, depth: 2 }))
+
+      delete user.password
+
+      return {
+        success: true,
+        token: jwt.signin(user._id),
+        projects,
+        user
+      }
     }
-
-    const res = await usersRepo.insertOne(data)
 
     return {
-      success: !!res.result.ok
+      success: false,
+      msg: 'Password isn\'t valid'
     }
   }
 
@@ -130,8 +112,8 @@ module.exports = ({
   return {
     findAll,
     findByEmail,
-    login,
     create,
+    login,
     verify
   }
 }

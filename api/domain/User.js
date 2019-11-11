@@ -1,5 +1,5 @@
 
-module.export = ({ username, email, hash, salt }) => {
+module.exports = ({ username, email, hash, salt }) => {
   const user = {
     username,
     email,
@@ -8,7 +8,7 @@ module.export = ({ username, email, hash, salt }) => {
       salt
     },
     teams: [],
-    projects: [],
+    projectsIds: [],
     CreatedAt: new Date()
   }
 

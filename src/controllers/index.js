@@ -67,7 +67,6 @@ module.exports = {
       // const makePswSafer = (psw) => {
       //   const splitted = psw.split(2, 4)
 
-      //   console.log('spliced ===> ', splitted)
       // }
 
       if (existingAccount && existingAccount.length) {

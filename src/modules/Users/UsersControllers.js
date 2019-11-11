@@ -49,7 +49,6 @@ module.exports = {
       // const makePswSafer = (psw) => {
       //   const splitted = psw.split(2, 4)
 
-      //   console.log('spliced ===> ', splitted)
       // }
 
       if (existingAccount && existingAccount.length) {
@@ -106,7 +105,6 @@ module.exports = {
 
       // return pswCompared ? res.status(200).send(user) : res.status(401)
     } catch (err) {
-      console.log('err ===> ', err)
       res.status(500).send(err.message)
     }
   }
