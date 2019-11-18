@@ -1,4 +1,5 @@
-const blocksEntity = require('../../domain/Block')
+const blockEntity = require('../../domain/Block')
+const pageEntity = require('../../domain/Page')
 
 module.exports = ({
   projectsRepo,
@@ -6,15 +7,17 @@ module.exports = ({
   jwt,
   log
 }) => {
-  const createBlock = async (projectId, blockData) => {
-    const res = await projectsRepo.addBlockToProject(projectId, blockData)
+  const createBlock = async (projectId, blockName) => {
+    const block = blockEntity(blockName)
 
-    if (res.value) {
-      const newBlock = res.value.blocks[res.value.blocks.length - 1]
+    const insertedBlock = await projectsRepo.addBlockToProject(projectId, block)
+
+    if (insertedBlock.value) {
+      const newBlock = insertedBlock.value.blocks[insertedBlock.value.blocks.length - 1]
 
       return {
         success: true,
-        newBlock
+        block: newBlock
       }
     }
     return {
@@ -23,17 +26,35 @@ module.exports = ({
     }
   }
 
-  const createPage = (projectId, blockId, pageData) => {
-    const res = projectsRepo.addPageToBlock(projectId, blockId, pageData)
+  const deleteBlock = async (projectId, blockId) => {
+    const updatedProject = await projectsRepo.deleteBlock(projectId, blockId)
 
-    if (res.value) {
-      const currentBlock = res.value.blocks.find((block) => block._id.toString() === blockId)
+    if (updatedProject.value) {
+      return {
+        success: true,
+        blockId
+      }
+    }
+
+    return {
+      success: false,
+      errors: ['block couldn\'t have been deleted']
+    }
+  }
+
+  const createPage = async (projectId, blockId, pagaData) => {
+    const page = pageEntity(pagaData)
+
+    const updatedProject = await projectsRepo.addPageToBlock(projectId, blockId, page)
+
+    if (updatedProject.value) {
+      const currentBlock = updatedProject.value.blocks.find((block) => block._id.toString() === blockId)
       const newPage = currentBlock.pages && currentBlock.pages[currentBlock.pages.length - 1]
 
       if (newPage) {
         return {
           success: true,
-          newPage
+          page: newPage
         }
       }
 
@@ -49,8 +70,17 @@ module.exports = ({
     }
   }
 
+  const deletePage = async (projectId, blockId) => {
+    const updatedProject = await projectsRepo.deletePage(projectId, blockId)
+
+    if (updatedProject.value) {
+
+    }
+  }
+
   return {
     createBlock,
+    deleteBlock,
     createPage
   }
 }

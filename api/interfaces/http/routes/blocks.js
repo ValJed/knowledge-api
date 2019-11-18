@@ -12,9 +12,8 @@ module.exports = ({
   router.post('/api/blocks', async (req, res, next) => {
     try {
       const { _id, name } = req.body
-      const blockData = { name }
 
-      const response = await blocksService.createBlock(_id, blockData)
+      const response = await blocksService.createBlock(_id, name)
 
       if (response.success) {
         res.status(201).send(response)
@@ -23,7 +22,25 @@ module.exports = ({
       }
     } catch (err) {
       log.error(err)
-      res.status(500).send(err.response)
+      res.status(500).send(err.message)
+    }
+  })
+
+  // Deleting a block
+  router.delete('/api/blocks', async (req, res, next) => {
+    try {
+      const { projectId, blockId } = req.body
+
+      const response = await blocksService.deleteBlock(projectId, blockId)
+
+      if (response.success) {
+        res.status(200).send(response)
+      } else {
+        res.status(400).send(response)
+      }
+    } catch (err) {
+      log.error(err)
+      res.status(500).send(err.message)
     }
   })
 
@@ -37,13 +54,13 @@ module.exports = ({
       const response = await blocksService.createPage(_id, blockId, pageData)
 
       if (response.success) {
-        res.send(201).send(response)
-      } else {
-        res.send(500).send(response)
+        return res.status(201).send(response)
       }
+
+      res.status(500).send(response)
     } catch (err) {
       log.error(err)
-      res.status(500).send(err.response)
+      res.status(500).send(err.message)
     }
   })
 

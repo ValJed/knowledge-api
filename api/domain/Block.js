@@ -1,14 +1,11 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const { ObjectID } = require('mongodb')
 
-module.exports = new Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  pages: {
-    type: Array,
-    required: true,
-    default: []
+module.exports = (name) => {
+  const block = {
+    _id: ObjectID(),
+    name,
+    pages: []
   }
-})
+
+  return block
+}

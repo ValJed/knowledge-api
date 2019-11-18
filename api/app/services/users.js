@@ -79,9 +79,7 @@ module.exports = ({
     const isPasswordValid = await encrypt.comparePsw(password, user.password.hash, user.password.salt)
 
     if (isPasswordValid) {
-      const projects = await projectsRepo.findUserProjects(user.projectsIds)
-
-      console.log('projects ===> ', require('util').inspect(projects, { colors: true, depth: 2 }))
+      const projects = await projectsRepo.findUserProjects(user._id)
 
       delete user.password
 

@@ -22,7 +22,7 @@ module.exports = ({
       }
     } catch (err) {
       log.error(err)
-      res.status(500).send(err.response)
+      res.status(500).send(err.message)
     }
   })
 
@@ -40,7 +40,7 @@ module.exports = ({
       res.status(500).send(response)
     } catch (err) {
       log.error(err)
-      res.status(500).send(err.response)
+      res.status(500).send(err.message)
     }
   })
 

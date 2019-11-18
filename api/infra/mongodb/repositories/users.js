@@ -5,18 +5,17 @@ const repository = (db) => {
 
   return {
     find: () => UsersDb.find().toArray(),
-    findOne: (email) => UsersDb.findOne({ email }),
-    create: (user) => UsersDb.insertOne(user),
-    deleteOne: (id) => UsersDb.deleteOne({ _id: id }),
-    addProjectToUser: (userId, projectId) => {
-      console.log('userId ===> ', require('util').inspect(userId, { colors: true, depth: 2 }))
-      console.log('projectId ===> ', require('util').inspect(projectId, { colors: true, depth: 2 }))
 
-      return UsersDb.findOneAndUpdate(
-        { _id: ObjectID(userId) },
-        { $push: { projectsIds: ObjectID(projectId) } },
-        { returnOriginal: false })
-    }
+    findOne: (email) => UsersDb.findOne({ email }),
+
+    create: (user) => UsersDb.insertOne(user),
+
+    deleteOne: (id) => UsersDb.deleteOne({ _id: id }),
+
+    addProjectToUser: (userId, projectId) => UsersDb.findOneAndUpdate(
+      { _id: ObjectID(userId) },
+      { $push: { projectsIds: ObjectID(projectId) } },
+      { returnOriginal: false })
   }
 }
 

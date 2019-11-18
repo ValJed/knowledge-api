@@ -5,16 +5,30 @@ const repository = (db) => {
 
   return {
     find: () => ProjectsDb.find().toArray(),
-    findUserProjects: (ids) => ProjectsDb.find({ _id: { $in: ids } }).toArray(),
+
+    findUserProjects: (userId) => ProjectsDb
+      .find({ ownersIds: { $all: [ObjectID(userId)] } }).toArray(),
+
     create: (project) => ProjectsDb.insertOne(project),
-    addBlockToProject: (projectId, blockData) => ProjectsDb.findOneAndUpdate(
+
+    addBlockToProject: (projectId, block) => ProjectsDb.findOneAndUpdate(
       { _id: ObjectID(projectId) },
-      { $push: { blocks: blockData } },
+      { $push: { blocks: block } },
       { returnOriginal: false }),
+
+    deleteBlock: (projectId, blockId) => ProjectsDb.findOneAndUpdate(
+      { _id: ObjectID(projectId) },
+      { $pull: { blocks: { _id: ObjectID(blockId) } } }
+    ),
+
     addPageToBlock: (projectId, blockId, pageData) => ProjectsDb.findOneAndUpdate(
       { _id: ObjectID(projectId), 'blocks._id': ObjectID(blockId) },
       { $push: { 'blocks.$.pages': pageData } },
-      { returnOriginal: false })
+      { returnOriginal: false }),
+
+    deletePage: (projectId, blockId, pageId) => {
+
+    }
   }
 }
 
