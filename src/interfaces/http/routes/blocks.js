@@ -64,5 +64,23 @@ module.exports = ({
     }
   })
 
+  // Deleting a page
+  router.delete('/api/blocks/pages', async (req, res, next) => {
+    try {
+      const { _id, blockId, pageId } = req.body
+
+      const response = await blocksService.deletePage(_id, blockId, pageId)
+
+      if (response.success) {
+        return res.status(200).send(response)
+      }
+
+      res.status(500).send(response)
+    } catch (err) {
+      log.error(err)
+      res.status(500).send(err.message)
+    }
+  })
+
   return router
 }

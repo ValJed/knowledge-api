@@ -1,6 +1,8 @@
 const blockEntity = require('../../domain/Block')
 const pageEntity = require('../../domain/Page')
 
+const getCurrentBlock = (project, blockId) => project.blocks.find((block) => block._id.toString() === blockId)
+
 module.exports = ({
   projectsRepo,
   encrypt,
@@ -48,7 +50,7 @@ module.exports = ({
     const updatedProject = await projectsRepo.addPageToBlock(projectId, blockId, page)
 
     if (updatedProject.value) {
-      const currentBlock = updatedProject.value.blocks.find((block) => block._id.toString() === blockId)
+      const currentBlock = getCurrentBlock(updatedProject.value, blockId)
       const newPage = currentBlock.pages && currentBlock.pages[currentBlock.pages.length - 1]
 
       if (newPage) {
@@ -70,17 +72,29 @@ module.exports = ({
     }
   }
 
-  const deletePage = async (projectId, blockId) => {
-    const updatedProject = await projectsRepo.deletePage(projectId, blockId)
+  const deletePage = async (projectId, blockId, pageId) => {
+    const updatedProject = await projectsRepo.deletePage(projectId, blockId, pageId)
 
     if (updatedProject.value) {
+      const currentBlock = getCurrentBlock(updatedProject.value, blockId)
+      const deletedPage = currentBlock.pages.find((page) => page._id === pageId)
 
+      return {
+        success: true,
+        deletedPage
+      }
+    }
+
+    return {
+      success: false,
+      errors: [`Failed to delete page : ${pageId}`]
     }
   }
 
   return {
     createBlock,
     deleteBlock,
-    createPage
+    createPage,
+    deletePage
   }
 }
