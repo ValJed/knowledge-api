@@ -9,7 +9,9 @@ const repository = (db) => {
     findUserProjects: (userId) => ProjectsDb
       .find({ ownersIds: { $all: [ObjectID(userId)] } }).toArray(),
 
-    create: (project) => ProjectsDb.insertOne(project),
+    createProject: (project) => ProjectsDb.insertOne(project),
+
+    deleteProject: (projectId) => ProjectsDb.deleteOne({ '_id': ObjectID(projectId) }),
 
     addBlockToProject: (projectId, block) => ProjectsDb.findOneAndUpdate(
       { _id: ObjectID(projectId) },

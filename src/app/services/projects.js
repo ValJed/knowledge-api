@@ -22,10 +22,10 @@ module.exports = ({
     }
   }
 
-  const create = async (userId, projectName) => {
+  const createProject = async (userId, projectName) => {
     const project = ProjectEntity(userId, projectName)
 
-    const createdProject = await projectsRepo.create(project)
+    const createdProject = await projectsRepo.createProject(project)
 
     if (createdProject.result.ok) {
       const updatedUser = await usersRepo.addProjectToUser(userId, createdProject.insertedId)
@@ -51,8 +51,15 @@ module.exports = ({
     }
   }
 
+  const deleteProject = async (userId, projectId) => {
+    const user = await usersRepo.findUserById(userId)
+
+    console.log('user ===> ', require('util').inspect(user, { colors: true, depth: 2 }))
+  }
+
   return {
     getUserprojects,
-    create
+    createProject,
+    deleteProject
   }
 }

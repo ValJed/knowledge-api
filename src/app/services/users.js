@@ -23,7 +23,7 @@ module.exports = ({
   }
 
   const findByEmail = async (email) => {
-    const user = await usersRepo.findOne(email)
+    const user = await usersRepo.findUserByEmail(email)
 
     if (user) {
       return {
@@ -37,7 +37,7 @@ module.exports = ({
   }
 
   const create = async ({ username, email, password, checkPassword }) => {
-    const existingUser = await usersRepo.findOne(email)
+    const existingUser = await usersRepo.findUserByEmail(email)
 
     if (existingUser) {
       return {
@@ -67,7 +67,7 @@ module.exports = ({
   }
 
   const login = async ({ email, password }) => {
-    const user = await usersRepo.findOne(email)
+    const user = await usersRepo.findUserByEmail(email)
 
     if (!user) {
       return {
