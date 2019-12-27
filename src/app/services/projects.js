@@ -52,9 +52,28 @@ module.exports = ({
   }
 
   const deleteProject = async (userId, projectId) => {
-    const user = await usersRepo.findUserById(userId)
+    const deletedUserProject = await usersRepo.deleteUserProject(userId, projectId)
 
-    console.log('user ===> ', require('util').inspect(user, { colors: true, depth: 2 }))
+    if (!deletedUserProject.value) {
+      return {
+        success: false,
+        errors: ['User did not has been updated']
+      }
+    }
+
+    const deletedProject = await projectsRepo.deleteProject(projectId)
+
+    if (deletedProject.result.ok) {
+      return {
+        success: true,
+        projectId
+      }
+    }
+
+    return {
+      success: false,
+      errors: ['Project didn\'t have been deleted']
+    }
   }
 
   return {

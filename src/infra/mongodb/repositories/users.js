@@ -14,6 +14,12 @@ const repository = (db) => {
 
     deleteOne: (id) => UsersDb.deleteOne({ _id: id }),
 
+    deleteUserProject: (userId, projectId) => UsersDb.findOneAndUpdate(
+      { _id: ObjectID(userId) },
+      { $pull: { projectsIds: ObjectID(projectId) } },
+      { returnOriginal: false }
+    ),
+
     addProjectToUser: (userId, projectId) => UsersDb.findOneAndUpdate(
       { _id: ObjectID(userId) },
       { $push: { projectsIds: ObjectID(projectId) } },

@@ -46,7 +46,6 @@ module.exports = ({
 
   // Deleting project
   router.delete('/api/projects', async (req, res, next) => {
-    console.log('=============> HERE <================')
     try {
       const { userId, projectId } = req.body
 
