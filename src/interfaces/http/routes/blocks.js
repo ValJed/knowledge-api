@@ -47,11 +47,16 @@ module.exports = ({
   // Creating a new page in a block
   router.post('/api/blocks/pages', async (req, res, next) => {
     try {
-      const { _id, name, blockId } = req.body
+      const { projectId, blockId, pageName } = req.body
 
-      const pageData = { name }
+      console.log('blockId ===> ', require('util').inspect(blockId, { colors: true, depth: 2 }))
 
-      const response = await blocksService.createPage(_id, blockId, pageData)
+      console.log('pojectId ===> ', require('util').inspect(projectId, { colors: true, depth: 2 }))
+      console.log('pageName ===> ', require('util').inspect(pageName, { colors: true, depth: 2 }))
+
+      const pageData = { name: pageName }
+
+      const response = await blocksService.createPage(projectId, blockId, pageData)
 
       if (response.success) {
         return res.status(201).send(response)
@@ -67,9 +72,9 @@ module.exports = ({
   // Deleting a page
   router.delete('/api/blocks/pages', async (req, res, next) => {
     try {
-      const { _id, blockId, pageId } = req.body
+      const { projectId, blockId, pageName } = req.body
 
-      const response = await blocksService.deletePage(_id, blockId, pageId)
+      const response = await blocksService.deletePage(projectId, blockId, pageName)
 
       if (response.success) {
         return res.status(200).send(response)

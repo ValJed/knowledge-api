@@ -72,22 +72,18 @@ module.exports = ({
     }
   }
 
-  const deletePage = async (projectId, blockId, pageId) => {
-    const updatedProject = await projectsRepo.deletePage(projectId, blockId, pageId)
+  const deletePage = async (projectId, blockId, pageName) => {
+    const updatedProject = await projectsRepo.deletePage(projectId, blockId, pageName)
 
     if (updatedProject.value) {
-      const currentBlock = getCurrentBlock(updatedProject.value, blockId)
-      const deletedPage = currentBlock.pages.find((page) => page._id === pageId)
-
       return {
-        success: true,
-        deletedPage
+        success: true
       }
     }
 
     return {
       success: false,
-      errors: [`Failed to delete page : ${pageId}`]
+      errors: [`Failed to delete page : ${pageName}`]
     }
   }
 
