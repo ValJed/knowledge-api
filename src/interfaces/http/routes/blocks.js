@@ -11,9 +11,9 @@ module.exports = ({
   // Creating a new block
   router.post('/api/blocks', async (req, res, next) => {
     try {
-      const { _id, name } = req.body
+      const { projectId, blockName } = req.body
 
-      const response = await blocksService.createBlock(_id, name)
+      const response = await blocksService.createBlock(projectId, blockName)
 
       if (response.success) {
         res.status(201).send(response)
@@ -30,6 +30,10 @@ module.exports = ({
   router.delete('/api/blocks', async (req, res, next) => {
     try {
       const { projectId, blockId } = req.body
+
+      if (!projectId || !blockId) {
+        return res.status(400).send('You should provide a project id and a block id')
+      }
 
       const response = await blocksService.deleteBlock(projectId, blockId)
 
@@ -48,11 +52,6 @@ module.exports = ({
   router.post('/api/blocks/pages', async (req, res, next) => {
     try {
       const { projectId, blockId, pageName } = req.body
-
-      console.log('blockId ===> ', require('util').inspect(blockId, { colors: true, depth: 2 }))
-
-      console.log('pojectId ===> ', require('util').inspect(projectId, { colors: true, depth: 2 }))
-      console.log('pageName ===> ', require('util').inspect(pageName, { colors: true, depth: 2 }))
 
       const pageData = { name: pageName }
 

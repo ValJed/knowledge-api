@@ -4,7 +4,8 @@ module.exports = (name) => {
   const block = {
     _id: ObjectID(),
     name,
-    pages: []
+    pages: [],
+    content: ''
   }
 
   return block
