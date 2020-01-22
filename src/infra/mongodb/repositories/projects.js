@@ -28,9 +28,14 @@ const repository = (db) => {
       { $push: { 'blocks.$.pages': pageData } },
       { returnOriginal: false }),
 
-    deletePage: (projectId, blockId, pageName) => ProjectsDb.findOneAndUpdate(
+    deletePage: (projectId, blockId, pageId) => ProjectsDb.findOneAndUpdate(
       { _id: ObjectID(projectId), 'blocks._id': ObjectID(blockId) },
-      { $pull: { 'blocks.$.pages': { name: pageName } } },
+      { $pull: { 'blocks.$.pages': { _id: ObjectID(pageId) } } },
+      { returnOriginal: false }),
+
+    updatePageContent: (projectId, blockId, pageName, content) => ProjectsDb.findOneAndUpdate(
+      { _id: ObjectID(projectId), 'blocks._id': ObjectID(blockId) },
+      { $set: { 'blocks.$.pages': { content } } },
       { returnOriginal: false })
   }
 }

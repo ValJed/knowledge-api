@@ -71,12 +71,38 @@ module.exports = ({
   // Deleting a page
   router.delete('/api/blocks/pages', async (req, res, next) => {
     try {
-      const { projectId, blockId, pageName } = req.body
+      const { projectId, blockId, pageId } = req.body
 
-      const response = await blocksService.deletePage(projectId, blockId, pageName)
+      console.log('pageName ===> ', pageId)
+      if (!projectId || !blockId || !pageId) {
+        return res.send(400).send()
+      }
+
+      const response = await blocksService.deletePage(projectId, blockId, pageId)
 
       if (response.success) {
         return res.status(200).send(response)
+      }
+
+      res.status(500).send(response)
+    } catch (err) {
+      log.error(err)
+      res.status(500).send(err.message)
+    }
+  })
+
+  router.put('/api/blocks/pages', async (req, res, next) => {
+    try {
+      const { projectId, blockId, page } = req.body
+
+      if (!projectId || !blockId || !page) {
+        return res.status(400).send()
+      }
+
+      const response = await blocksService.updatePage(projectId, blockId, page)
+
+      if (response.success) {
+        return res.send(200).send(response)
       }
 
       res.status(500).send(response)

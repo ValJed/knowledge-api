@@ -72,8 +72,8 @@ module.exports = ({
     }
   }
 
-  const deletePage = async (projectId, blockId, pageName) => {
-    const updatedProject = await projectsRepo.deletePage(projectId, blockId, pageName)
+  const deletePage = async (projectId, blockId, pageId) => {
+    const updatedProject = await projectsRepo.deletePage(projectId, blockId, pageId)
 
     if (updatedProject.value) {
       return {
@@ -83,8 +83,12 @@ module.exports = ({
 
     return {
       success: false,
-      errors: [`Failed to delete page : ${pageName}`]
+      errors: ['Failed to delete page']
     }
+  }
+
+  const updatePageContent = async (projectId, blockId, page) => {
+    const updatedProject = await projectsRepo.updatePage(projectId, blockId, page)
   }
 
   return {
